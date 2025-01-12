@@ -1,23 +1,17 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Home from './Home.js';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container'>
+      <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+        <h1>Currency Converter</h1>
+      </nav>
+      <Home />
+      <footer className='text-lg-start bg-body-tertiary text-muted'>
+        <a href='https://github.com/MisterAdili'>See me on GitHub</a>
+      </footer>
     </div>
   );
 }
