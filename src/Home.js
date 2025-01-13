@@ -153,7 +153,7 @@ class Converter extends React.Component{
           </div>
         </div>
         <div className="row">
-          <div className='table-responsive col-6 margin-top-2'>
+          <div className='table-responsive col-12 margin-top-2'>
             <table className='table table-striped table-bordered'>
               <thead>
                 <tr>
