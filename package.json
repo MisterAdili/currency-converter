@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^13.2.1",
     "add": "^2.0.6",
     "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.7",
     "gh-pages": "^6.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

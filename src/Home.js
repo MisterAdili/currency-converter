@@ -1,4 +1,5 @@
 import React from 'react';
+import Chart from 'chart.js/auto'
 
 const json = (response) => response.json()
 
@@ -20,6 +21,7 @@ class Converter extends React.Component{
   this.handleChange = this.handleChange.bind(this);
   this.convert = this.convert.bind(this);
   this.switchButton = this.switchButton.bind(this);
+  this.chartRef = React.createRef();
   }
 
   componentDidMount() {
@@ -31,6 +33,7 @@ class Converter extends React.Component{
         this.setState({ fromUnitsList: options });
         this.convert();
         });
+        this.getHistoricalRates(this.state.fromUnit, this.state.toUnit);
   }
 
   handleChange(event){
@@ -89,6 +92,8 @@ class Converter extends React.Component{
       .then((data) => {
         this.setState({toNumber: (this.state.fromNumber * data.rates[this.state.toUnit]).toFixed(2)});
       });
+
+    this.getHistoricalRates(this.state.fromUnit, this.state.toUnit);
   }
 
   switchButton (event) {
@@ -101,7 +106,46 @@ class Converter extends React.Component{
     this.setState({ toUnit : tempVar }, () => this.convert());
 
   }  
-  
+
+  getHistoricalRates = (base, quote) => {
+    const endDate = new Date().toISOString().split('T')[0];
+    const startDate = new Date((new Date).getTime() - (30 * 24 * 60 * 60 * 1000)).toISOString().split('T')[0];
+
+    fetch(`https://api.frankfurter.app/${startDate}..${endDate}?from=${base}&to=${quote}`)
+    .then(json)
+    .then( data => {
+      const chartLabels = Object.keys(data.rates);
+      const chartData = Object.values(data.rates).map(rate => rate[quote]);
+      const chartLabel = `${base} / ${quote}`;
+      this.buildChart(chartLabels, chartData, chartLabel);
+    })
+  }
+
+  buildChart = (labels, data, label) => {
+    const chartRef = this.chartRef.current.getContext("2d");
+
+    if(typeof this.chart !== "undefined") {
+      this.chart.destroy();
+    }
+
+    this.chart = new Chart(this.chartRef.current.getContext("2d"), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: label,
+            data,
+            fill: false,
+            tension: 0,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+      }
+    })
+  }
 
   render(){
     const {fromNumber, fromUnit, toNumber, toUnit, fromUnitsList, toUnitsList, tableBody} = this.state;
@@ -168,7 +212,11 @@ class Converter extends React.Component{
               </tbody>
             </table>
           </div>
-          
+        </div>
+        <div className='row'>
+          <div className='col-12'>
+            <canvas ref={this.chartRef} />
+          </div>
         </div>
       </div>
     )
